@@ -1,14 +1,12 @@
 # AKS Terraform Deployment [WIP]
 
-This project provisions an Azure Kubernetes Service (AKS) cluster using Terraform and deploys an NGINX workload to the cluster using Kubernetes manifests. The setup includes Azure AD integration, managed identities, a system and spot node pool, and a sample deployment with autoscaling.
+This project provisions an Azure Kubernetes Service (AKS) cluster using Terraform and deploys an NGINX workload to the cluster using Kubernetes manifests. The setup includes Azure AD integration, managed identities, a system and spot node pool, and a sample deployment.
 
 ## Project Structure
 
 - `avm.aks.tf`: Terraform configuration for deploying the AKS cluster using the Azure Verified Module (AVM).
 - `variables.tf`: Terraform variable definitions for sensitive and required inputs.
-- `nginx-deployment.yaml`: Kubernetes manifest for deploying an NGINX deployment with three replicas.
-- `nginx-service.yaml`: Kubernetes manifest for exposing NGINX via a LoadBalancer service.
-- `nginx-hpa.yaml`: Kubernetes manifest for a Horizontal Pod Autoscaler (HPA) for the NGINX deployment.
+- `nginx-chart`: Helm chart for deploying an NGINX deployment
 
 ## Prerequisites
 
@@ -31,18 +29,16 @@ This project provisions an Azure Kubernetes Service (AKS) cluster using Terrafor
    ```
 
 **Deploy Workloads**
-   Apply the Kubernetes manifests to deploy NGINX and configure autoscaling:
+   Helm deployments
    ```sh
-   kubectl apply -f nginx-deployment.yaml
-   kubectl apply -f nginx-service.yaml
-   kubectl apply -f nginx-hpa.yaml
+   helm install nginx nginx-chart
    ```
 
 ## Features
 
 - **AKS Cluster**: Provisioned with Azure AD integration, managed identities, and RBAC.
 - **Node Pools**: Includes a system node pool and a spot node pool for cost optimization.
-- **NGINX Deployment**: Deploys a sample NGINX workload with resource requests and limits.
+- **NGINX Deployment**: Deploys a sample NGINX site
 - **LoadBalancer Service**: Exposes NGINX externally via Azure Load Balancer.
 - **Horizontal Pod Autoscaler**: Scales NGINX pods based on CPU utilization.
 
