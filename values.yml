@@ -1,0 +1,140 @@
+# =================================================================
+# FINAL Configuration for Spot Node Pool Deployment
+#
+# This version adds the required tolerations and affinity to the
+# Prometheus Operator's own webhook patch jobs, which was the
+# final blocking component.
+# =================================================================
+
+alertmanager:
+  tolerations:
+    - key: "kubernetes.azure.com/scalesetpriority"
+      operator: "Equal"
+      value: "spot"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "kubernetes.azure.com/scalesetpriority"
+                operator: In
+                values:
+                  - "spot"
+
+prometheus:
+  prometheusSpec:
+    tolerations:
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Equal"
+        value: "spot"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+              - key: "kubernetes.azure.com/scalesetpriority"
+                operator: In
+                values:
+                  - "spot"
+
+# --- kube-prometheus-stack values ---------------------------
+prometheusOperator:
+  admissionWebhooks:
+    # --------------------------------------------------------
+    # Job that generates the TLS secret
+    createSecretJob:
+      tolerations:
+        - key: "kubernetes.azure.com/scalesetpriority"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
+      # (optional) force the job onto Spot nodes only
+      nodeSelector:
+        kubernetes.azure.com/scalesetpriority: spot
+
+    # --------------------------------------------------------
+    # Job that patches the MutatingWebhookConfiguration
+    patch:
+      tolerations:
+        - key: "kubernetes.azure.com/scalesetpriority"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
+      nodeSelector:
+        kubernetes.azure.com/scalesetpriority: spot
+
+# --- The rest of the components ---
+kube-state-metrics:
+  tolerations:
+    - key: "kubernetes.azure.com/scalesetpriority"
+      operator: "Equal"
+      value: "spot"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "kubernetes.azure.com/scalesetpriority"
+                operator: In
+                values:
+                  - "spot"
+
+prometheus-node-exporter:
+  tolerations:
+    - key: "kubernetes.azure.com/scalesetpriority"
+      operator: "Equal"
+      value: "spot"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "kubernetes.azure.com/scalesetpriority"
+                operator: In
+                values:
+                  - "spot"
+
+prometheus-pushgateway:
+  tolerations:
+    - key: "kubernetes.azure.com/scalesetpriority"
+      operator: "Equal"
+      value: "spot"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "kubernetes.azure.com/scalesetpriority"
+                operator: In
+                values:
+                  - "spot"
+
+prometheus-server:
+  tolerations:
+    # Allow scheduling on the Spot node-pool
+    - key: "kubernetes.azure.com/scalesetpriority"
+      operator: "Equal"
+      value: "spot"
+      effect: "NoSchedule"
+
+  # (Optional) Ensure the pod only lands on Spot nodes
+  nodeSelector:
+    kubernetes.azure.com/scalesetpriority: spot
+
+
+server:
+  tolerations:
+    # Allow scheduling on the Spot node-pool
+    - key: "kubernetes.azure.com/scalesetpriority"
+      operator: "Equal"
+      value: "spot"
+      effect: "NoSchedule"
+
+  # (Optional) Ensure the pod only lands on Spot nodes
+  nodeSelector:
+    kubernetes.azure.com/scalesetpriority: spot

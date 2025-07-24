@@ -34,7 +34,7 @@ module "aks" {
       os_disk_size_gb = 64
     }
   }
-
+  
   # Managed identities
   managed_identities = {
     system_assigned = true
